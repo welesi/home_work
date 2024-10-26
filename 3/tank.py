@@ -4,10 +4,10 @@ from tkinter import *
 class Tank:
     __count = 0
     def __init__(self, canvas, x, y,model = 'Т-14 Армата', ammo = 100, speed = 1,
-                 file_up = '../img/tankT34_up.png',
-                 file_down = '../img/tankT34_down.png',
-                 file_left = '../img/tankT34_left.png',
-                 file_right = '../img/tankT34_right.png'):
+                 file_up = '../img/tank_up.png',
+                 file_down = '../img/tank_down.png',
+                 file_left = '../img/tank_left.png',
+                 file_right = '../img/tank_right.png'):
         self.__skin_up = PhotoImage(file = file_up)
         self.__skin_down = PhotoImage(file = file_down)
         self.__skin_left = PhotoImage(file = file_left)
