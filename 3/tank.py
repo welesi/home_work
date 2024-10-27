@@ -12,6 +12,8 @@ class Tank:
                  bot = True):
         self.__bot = bot
 
+        self.__target = None
+
         self.__skin_up = PhotoImage(file = file_up)
         self.__skin_down = PhotoImage(file = file_down)
         self.__skin_left = PhotoImage(file = file_left)
@@ -45,8 +47,23 @@ class Tank:
         if self.__ammo > 0:
             self.__ammo -= 1
             print('стреляю')
-# 3. Изменим методы выбора напрвления (если есть топливо изменяется движение по векторам и картика)
-    # метод repaint() больше не нужен
+
+    def set_target(self, target):
+        self.__target = target
+
+    def __AI_goto_target(self):
+
+        if randint(1, 2) == 1:
+            if self.__target.get_x() < self.get_x():
+                self.left()
+            else:
+                self.right()
+        else:
+            if self.__target.get_y() < self.get_y():
+                self.backward()
+            else:
+                self.forvard()
+
     def forvard(self):
         self.__vx = 0
         self.__vy = -1
@@ -76,18 +93,21 @@ class Tank:
 
     def __AI(self):
         if randint(1, 30) == 1:
-            self.__AI_change_orientation()
+            if randint(1, 10) < 9 and self.__target is not None:
+                self.__AI_goto_target()
+            else:
+                self.__AI_change_orientation()
 
     def __AI_change_orientation(self):
         rand = randint(0, 3)
         if rand == 0:
-            self.left
-        if rand == 1:
-            self.right
-        if rand == 2:
-            self.forvard
-        if rand == 3:
-            self.backward
+            self.left()
+        if rand == 0:
+            self.right()
+        if rand == 0:
+            self.forvard()
+        if rand == 0:
+            self.backward()
 
 
 
@@ -118,6 +138,11 @@ class Tank:
 
     def inersects(self, other_tank):
         return self.__hitbox.intersects(other_tank.__hitbox)
+        if value:
+            self.__undo_move()
+            if self._bot:
+                self.__AI_change_orientation()
+        return value
 
 
     def get_x(self):
@@ -155,3 +180,14 @@ class Tank:
     def __str__(self):
         return (f'координаты: x = {self.__x}, y = {self.__y}, модель: {self.__model}, '
                 f'здоровье: {self.__hp}, опыт: {self.__xp}, боеприпасы: {self.__ammo}')
+
+    def __undo_move(self):
+
+        if self.__dx == 0 and self.__dy == 0:
+            return
+        self.__x -= self.__dx
+        self.__y -= self.__dy
+        self.__update_hitbox()
+        self.__repaint()
+        self.__dx = 0
+        self.__dy = 0
