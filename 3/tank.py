@@ -1,5 +1,6 @@
 from hitbox import Hitbox
 from tkinter import *
+from random import randint
 
 class Tank:
     __count = 0
@@ -7,14 +8,17 @@ class Tank:
                  file_up = '../img/tank_up.png',
                  file_down = '../img/tank_down.png',
                  file_left = '../img/tank_left.png',
-                 file_right = '../img/tank_right.png'):
+                 file_right = '../img/tank_right.png',
+                 bot = True):
+        self.__bot = bot
+
         self.__skin_up = PhotoImage(file = file_up)
         self.__skin_down = PhotoImage(file = file_down)
         self.__skin_left = PhotoImage(file = file_left)
         self.__skin_right = PhotoImage(file = file_right)
 
         Tank.__count += 1
-        self.__hitbox = Hitbox(x, y, self.get_sise(), self.get_sise())
+        self.__hitbox = Hitbox(x, y, self.get_sise(), self.get_sise(), padding=2)
         self.__canvas = canvas
         self.__model = model
         self.__hp = 100
@@ -70,12 +74,34 @@ class Tank:
         self.__canvas.itemconfig(self.__id, image = self.__skin_right)
         # self.__repaint()
 
+    def __AI(self):
+        if randint(1, 30) == 1:
+            self.__AI_change_orientation()
+
+    def __AI_change_orientation(self):
+        rand = randint(0, 3)
+        if rand == 0:
+            self.left
+        if rand == 1:
+            self.right
+        if rand == 2:
+            self.forvard
+        if rand == 3:
+            self.backward
+
 
 
     def update(self):
         if self.__fuel > self.__speed:
-            self.__x += self.__vx * self.__speed
-            self.__y += self.__vy * self.__speed
+
+            if self.__bot:
+                self.__AI()
+
+            self.__dx = self.__vx * self.__speed
+            self.__dy = self.__vy * self.__speed
+            self.__x += self.__dx
+            self.__y += self.__dy
+
             self.__fuel -=self.__speed
             self.__update_hitbox()
             self.__repaint()
