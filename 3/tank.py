@@ -1,20 +1,25 @@
 from hitbox import Hitbox
 from tkinter import *
+from random import randint
+import world
 
 class Tank:
     __count = 0
-    def __init__(self, canvas, x, y,model = 'Т-14 Армата', ammo = 100, speed = 1,
+    def __init__(self, canvas, x, y, model = 'Т-14 Армата', ammo = 100, speed = 1,
                  file_up = '../img/tank_up.png',
                  file_down = '../img/tank_down.png',
                  file_left = '../img/tank_left.png',
-                 file_right = '../img/tank_right.png'):
+                 file_right = '../img/tank_right.png', bot = True):
+        self.__bot = bot
+        self.__target = None
+
         self.__skin_up = PhotoImage(file = file_up)
         self.__skin_down = PhotoImage(file = file_down)
         self.__skin_left = PhotoImage(file = file_left)
         self.__skin_right = PhotoImage(file = file_right)
 
         Tank.__count += 1
-        self.__hitbox = Hitbox(x, y, self.get_sise(), self.get_sise())
+        self.__hitbox = Hitbox(x, y, self.get_sise(), self.get_sise(), padding = 0)
         self.__canvas = canvas
         self.__model = model
         self.__hp = 100
@@ -24,6 +29,8 @@ class Tank:
         self.__speed = speed
         self.__x = x
         self.__y = y
+        self.__dx = 0
+        self.__dy = 0
 
         # 1. добавить атрибуты для контроля движения по осям
         self.__vx = 0
@@ -36,6 +43,39 @@ class Tank:
 
         self.__create()
         self.right()
+
+    def set_target(self, target):
+        self.__target = target
+
+    def __AI_goto_target(self):
+        if randint(1, 2) == 1:
+            if self.__target.get_x() < self.get_x():
+                self.left()
+            else:
+                self.right()
+        else:
+            if self.__target.get_y() < self.get_y():
+                self.forvard()
+            else:
+                self.backward()
+
+    def __AI(self):
+        if randint(1,30) == 1:
+            if randint(1,10) < 9 and self.__target is not None:
+                self.__AI_goto_target()
+            else:
+                self.__AI_change_opientation()
+
+    def __AI_change_opientation(self):
+        rand = randint(0,3)
+        if rand == 0:
+            self.left()
+        if rand == 1:
+            self.right()
+        if rand == 2:
+            self.forvard()
+        if rand == 3:
+            self.backward()
 
     def fire(self):
         if self.__ammo > 0:
@@ -74,10 +114,15 @@ class Tank:
 
     def update(self):
         if self.__fuel > self.__speed:
-            self.__x += self.__vx * self.__speed
-            self.__y += self.__vy * self.__speed
+            if self.__bot:
+                self.__AI()
+            self.__dx = self.__vx * self.__speed
+            self.__dy = self.__vy * self.__speed
+            self.__x += self.__dx
+            self.__y += self.__dy
             self.__fuel -=self.__speed
             self.__update_hitbox()
+            self.__check_out_of_world()
             self.__repaint()
 
 
@@ -91,7 +136,12 @@ class Tank:
         self.__hitbox.moveto(self.__x, self.__y)
 
     def inersects(self, other_tank):
-        return self.__hitbox.intersects(other_tank.__hitbox)
+        value = self.__hitbox.intersects(other_tank.__hitbox)
+        if value:
+            self.__undo_move()
+            if self.__bot:
+                self.__AI_change_opientation()
+        return value
 
 
     def get_x(self):
@@ -125,7 +175,36 @@ class Tank:
     def get_sise(self):
         return self.__skin_up.width()
 
+    def __check_out_of_world(self):
+        if self.__hitbox.left < 0 or \
+                self.__hitbox.top < 0 or \
+                self.__hitbox.right >= world.WIDTH or \
+                self.__hitbox.bottom >= world.HEIGHT:
+            self.__undo_move()
+            if self.__bot:
+                self.__AI_change_orientation()
+
 
     def __str__(self):
         return (f'координаты: x = {self.__x}, y = {self.__y}, модель: {self.__model}, '
                 f'здоровье: {self.__hp}, опыт: {self.__xp}, боеприпасы: {self.__ammo}')
+
+    def __undo_move(self):
+        if self.__dx == 0 and self.__dy == 0:
+            return
+        self.__x -= self.__dx
+        self.__y -= self.__dy
+        #self.__fuel += self.__speed
+        self.__update_hitbox()
+        self.__repaint()
+        self.__dx = 0
+        self.__dy = 0
+
+    def __check_out_of_world(self):
+        if self.__hitbox.left < 0 or \
+                self.__hitbox.top < 0 or \
+                self.__hitbox.right >= world.WIDTH or \
+                self.__hitbox.bottom >= world.HEIGHT:
+            self.__undo_move()
+            if self.__bot:
+                self.__AI_change_opientation()
