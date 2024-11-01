@@ -12,7 +12,6 @@ class Tank:
                  file_right = '../img/tank_right.png', bot = True):
         self.__bot = bot
         self.__target = None
-
         self.__skin_up = PhotoImage(file = file_up)
         self.__skin_down = PhotoImage(file = file_down)
         self.__skin_left = PhotoImage(file = file_left)
