@@ -1,5 +1,6 @@
 from tank import Tank
 import world
+from random import randint
 
 _tanks = []
 _canvas = None
@@ -28,3 +29,14 @@ def check_collision(tank):
         if tank.inersects(other_tank):
             return True
         return False
+
+def spawn_enemy():
+    while True:
+        pos_x = randint(200, 800)
+        pos_y = randint(200, 600)
+
+        t = Tank(_canvas, x=pos_x, y=pos_y, speed=1)
+        if not check_collision(t):
+            t.set_target(get_player())
+            _tanks.append(t)
+            return True

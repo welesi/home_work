@@ -10,10 +10,10 @@ class Tank:
     __count = 0
 
     def __init__(self, canvas, x, y,model = 'Т-14 Армата', ammo = 100, speed = 10,
-                 file_up = '../img/tankT34_up.png',
-                 file_down = '../img/tankT34_down.png',
-                 file_left = '../img/tankT34_left.png',
-                 file_right = '../img/tankT34_right.png',
+                 file_up = '../img/tank_up.png',
+                 file_down = '../img/tank_down.png',
+                 file_left = '../img/tank_left.png',
+                 file_right = '../img/tank_right.png',
 
                  bot = True):
         self.__bot = bot
@@ -194,6 +194,13 @@ class Tank:
             self.__undo_move()
             if self.__bot:
                 self.__AI_change_orientation()
+
+    def __del__(self):
+        print(f"танк удален")
+        try:
+            self.__canvas.delete(self.__id)
+        except Exception:
+            pass
 
     def __str__(self):
         return (f'координаты: x = {self.__x}, y = {self.__y}, модель: {self.__model}, '
