@@ -1,6 +1,10 @@
+# Позиционирование камеры на танке игрока
+
 from tank import Tank
 from tkinter import*
+# 1 подключение библиотеки world
 import world
+
 
 KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN = 37, 39, 38, 40
 
@@ -12,6 +16,10 @@ KEY_D = 68
 
 FPS = 60
 def update():
+    # 1 будем переставлять камеру в новые координаты совпадфющие с координатами танка игрока
+    # world.set_camera_xy(player.get_x(), player.get_y())
+
+    # 2 отцентруем камеру
     world.set_camera_xy(player.get_x()-world.SCREEN_WIDTH//2 + player.get_size()//2,
                         player.get_y()-world.SCREEN_HEIGHT//2 + player.get_size()//2)
     player.update()
@@ -25,15 +33,14 @@ def check_collision():
     enemy.inersects(player)
 
 
-
 def key_press(event):
     if event.keycode == KEY_W:
         player.forvard()
-    if event.keycode == KEY_S:
+    elif event.keycode == KEY_S:
         player.backward()
-    if event.keycode == KEY_A:
+    elif event.keycode == KEY_A:
         player.left()
-    if event.keycode == KEY_D:
+    elif event.keycode == KEY_D:
         player.right()
     elif event.keycode == KEY_UP:
         world.move_camera(0, -5)
@@ -45,15 +52,15 @@ def key_press(event):
         world.move_camera(5, 0)
 
 
+
 w = Tk()
 w.title('Танки на минималках 2.0')
-canv = Canvas(w, width = world.SCREEN_WIDTH, height = world.SCREEN_HEIGHT, bg = 'alice blue')
+canv = Canvas(w, width = world.WIDTH, height = world.HEIGHT, bg = 'alice blue')
 canv.pack()
 
 player = Tank(canvas = canv, x = 100, y = 50, ammo = 100, speed=1, bot = False)
 enemy = Tank(canvas = canv, x = 300, y = 300, ammo = 100, speed=1, bot = True)
-neutral = Tank(canvas = canv, x = 200, y = 200, ammo = 100, speed=1, bot = False)
-
+neutral = Tank(canvas = canv, x = 300, y = 300, ammo = 100, speed=1, bot = False)
 neutral.stop()
 
 enemy.set_target(player)

@@ -1,7 +1,10 @@
+
 _camera_x = 0
 _camera_y = 0
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
+
 WIDTH = SCREEN_WIDTH * 6
 HEIGHT = SCREEN_HEIGHT * 4
 
