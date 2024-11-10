@@ -4,6 +4,7 @@ from tank import Tank
 from tkinter import*
 # 1 подключение библиотеки world
 import world
+import tanks_collection
 
 
 KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN = 37, 39, 38, 40
@@ -16,24 +17,16 @@ KEY_D = 68
 
 FPS = 60
 def update():
-    # 1 будем переставлять камеру в новые координаты совпадфющие с координатами танка игрока
-    # world.set_camera_xy(player.get_x(), player.get_y())
-
-    # 2 отцентруем камеру
+    tanks_collection.update()
+    player = tanks_collection.get_player()
     world.set_camera_xy(player.get_x()-world.SCREEN_WIDTH//2 + player.get_size()//2,
                         player.get_y()-world.SCREEN_HEIGHT//2 + player.get_size()//2)
-    player.update()
-    enemy.update()
-    neutral.update()
-    check_collision()
     w.after(1000//FPS, update)
 
-def check_collision():
-    player.inersects(enemy)
-    enemy.inersects(player)
 
 
 def key_press(event):
+    player = tanks_collection.get_player()
     if event.keycode == KEY_W:
         player.forvard()
     elif event.keycode == KEY_S:
@@ -58,13 +51,9 @@ w.title('Танки на минималках 2.0')
 canv = Canvas(w, width = world.WIDTH, height = world.HEIGHT, bg = 'alice blue')
 canv.pack()
 
-player = Tank(canvas = canv, x = 100, y = 50, ammo = 100, speed=1, bot = False)
-enemy = Tank(canvas = canv, x = 300, y = 300, ammo = 100, speed=1, bot = True)
-neutral = Tank(canvas = canv, x = 300, y = 300, ammo = 100, speed=1, bot = False)
-neutral.stop()
 
-enemy.set_target(player)
 
+tanks_collection.initialize(canv)
 
 w.bind('<KeyPress>', key_press)
 
