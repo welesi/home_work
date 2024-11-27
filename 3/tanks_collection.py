@@ -1,6 +1,6 @@
 from tank import Tank
 import world
-from random import randint
+from random import randint, choice
 
 _tanks = []
 _canvas = None

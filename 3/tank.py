@@ -2,7 +2,7 @@
 
 from hitbox import Hitbox
 from tkinter import *
-from random import randint
+from random import randint, choice
 # 3 подключение библиотеки world
 import world
 import texture as skin
@@ -126,6 +126,14 @@ class Tank:
         self.__dx = 0
         self.__dy = 0
 
+    def __check_out_of_world(self):
+        if self.__hitbox.left < 0 or \
+                self.__hitbox.top < 0 or \
+                self.__hitbox.right >= world.get_width() or \
+                self.__hitbox.bottom >= world.get_height():
+            self.__undo_move()
+        if self.bot:
+            self.__AI_change_orintation()
 
     def __create(self):
         self.__id = self.__canvas.create_image(self.__x, self.__y, image = skin.get('tank_up'), anchor ='nw')

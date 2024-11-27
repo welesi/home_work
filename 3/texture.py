@@ -1,5 +1,5 @@
 from tkinter import PhotoImage
-
+from random import randint, choice
 _frames = {}
 
 def load(name, file_name):
