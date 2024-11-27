@@ -2,7 +2,7 @@ from random import choice
 
 student = input('Представьтесь, пожалуйста: ')
 try:
-    level = int(input('Выберите уровень сложности 1 - 3: '))
+    level = int(input('Выберите уровень сложности 1 - Контрольная: '))
 except:
     level = 1
     print('Установлен первый уровень сложности.')

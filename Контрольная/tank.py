@@ -3,7 +3,7 @@
 from hitbox import Hitbox
 from tkinter import *
 from random import randint
-# 3 подключение библиотеки world
+# Контрольная подключение библиотеки world
 import world
 import texture as skin
 
