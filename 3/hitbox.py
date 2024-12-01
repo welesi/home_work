@@ -1,4 +1,4 @@
-from victorina import points
+
 import world
 
 class Hitbox:
