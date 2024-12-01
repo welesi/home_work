@@ -10,8 +10,7 @@ import texture as skin
 class Tank:
     __count = 0
 
-    def __init__(self, canvas, x, y,model = 'Т-14 Армата', ammo = 100, speed = 10, bot = True):
-
+    def __init__(self, canvas, x, y,model = 'Т-14 Армата', ammo = 100, speed = 1, bot = True):
         self.__bot = bot
         self.__target = None
         Tank.__count += 1
@@ -38,6 +37,13 @@ class Tank:
         self.right()
 
         print(self)
+
+    def __check_map_colision(self):
+        result = self.__hitbox.check_map_collision()
+        if result:
+            self.__undo_move()
+            if self.__bot:
+                self.__AI_change_orientation()
 
     def set_target(self, target):
         self.__target = target
@@ -115,6 +121,7 @@ class Tank:
 
             self.__update_hitbox()
             self.__chek_out_of_world()
+            self.__check_map_colision()
             self.__repaint()
 
 
